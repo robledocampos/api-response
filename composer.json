@@ -1,4 +1,5 @@
 {
+  "name": "robledocampos/api-response",
   "autoload": {
     "classmap": [
       "app/"
