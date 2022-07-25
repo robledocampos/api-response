@@ -50,7 +50,7 @@ class ResponseService
         'NETWORK_AUTHENTICATION_REQUIRED' => 511
     ];
 
-    private $response;
+    private Response $response;
 
     function __construct()
     {
