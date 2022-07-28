@@ -15,14 +15,14 @@ class ResponseServiceTest extends TestCase
     {
         $result = $this->responseService->buildWithArray();
         $this->assertEquals($this->responseService::STATUS_CODES['OK'], $result->getStatusCode());
-        $this->assertEquals('[]', $result->getContent());
+        $this->assertEquals("[]", $result->getContent());
     }
 
     function testNoArgsJsonPayload()
     {
         $result = $this->responseService->buildWithJson();
         $this->assertEquals($this->responseService::STATUS_CODES['OK'], $result->getStatusCode());
-        $this->assertEquals('[]', $result->getContent());
+        $this->assertEquals("", $result->getContent());
     }
 
     function testArrayPayload()
@@ -43,14 +43,14 @@ class ResponseServiceTest extends TestCase
     {
         $result = $this->responseService->buildWithArray([], 201);
         $this->assertEquals($this->responseService::STATUS_CODES['CREATED'], $result->getStatusCode());
-        $this->assertEquals('[]', $result->getContent());
+        $this->assertEquals("[]", $result->getContent());
     }
 
     function testJsonPayloadSetStatusCode()
     {
         $result = $this->responseService->buildWithJson("", 201);
         $this->assertEquals($this->responseService::STATUS_CODES['CREATED'], $result->getStatusCode());
-        $this->assertEquals('[]', $result->getContent());
+        $this->assertEquals("", $result->getContent());
     }
 
     function testArrayPayloadNoContent()
@@ -83,11 +83,5 @@ class ResponseServiceTest extends TestCase
     {
         $this->expectException('JsonEncodeException');
         $this->responseService->buildWithArray(["testing \xff"]);
-    }
-
-    function testJsonPayloadWithNonUTF8Payload()
-    {
-        $this->expectException('JsonEncodeException');
-        $this->responseService->buildWithJson("testing \xff");
     }
 }
