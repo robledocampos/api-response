@@ -11,43 +11,83 @@ class ResponseServiceTest extends TestCase
         $this->responseService = new ResponseService();
     }
 
-    function testEmptyPayload()
+    function testNoArgsArrayPayload()
     {
-        $result = $this->responseService->build();
+        $result = $this->responseService->buildWithArray();
         $this->assertEquals($this->responseService::STATUS_CODES['OK'], $result->getStatusCode());
         $this->assertEquals('[]', $result->getContent());
     }
 
-    function testNotEmptyPayload()
+    function testNoArgsJsonPayload()
     {
-        $result = $this->responseService->build(['id' => 1, 'message' => "created"]);
+        $result = $this->responseService->buildWithJson();
+        $this->assertEquals($this->responseService::STATUS_CODES['OK'], $result->getStatusCode());
+        $this->assertEquals('[]', $result->getContent());
+    }
+
+    function testArrayPayload()
+    {
+        $result = $this->responseService->buildWithArray(['id' => 1, 'message' => "created"]);
         $this->assertEquals($this->responseService::STATUS_CODES['OK'], $result->getStatusCode());
         $this->assertEquals('{"id":1,"message":"created"}', $result->getContent());
     }
 
-    function testSetStatusCode()
+    function testJsonPayload()
     {
-        $result = $this->responseService->build([], 201);
+        $result = $this->responseService->buildWithJson('{"id":1,"message":"created"}');
+        $this->assertEquals($this->responseService::STATUS_CODES['OK'], $result->getStatusCode());
+        $this->assertEquals('{"id":1,"message":"created"}', $result->getContent());
+    }
+
+    function testArrayPayloadSetStatusCode()
+    {
+        $result = $this->responseService->buildWithArray([], 201);
         $this->assertEquals($this->responseService::STATUS_CODES['CREATED'], $result->getStatusCode());
         $this->assertEquals('[]', $result->getContent());
     }
 
-    function testNoContent()
+    function testJsonPayloadSetStatusCode()
     {
-        $result = $this->responseService->build(['id' => 1, 'message' => "created"], 204);
+        $result = $this->responseService->buildWithJson("", 201);
+        $this->assertEquals($this->responseService::STATUS_CODES['CREATED'], $result->getStatusCode());
+        $this->assertEquals('[]', $result->getContent());
+    }
+
+    function testArrayPayloadNoContent()
+    {
+        $result = $this->responseService->buildWithArray(['id' => 1, 'message' => "created"], 204);
         $this->assertEquals($this->responseService::STATUS_CODES['NO_CONTENT'], $result->getStatusCode());
         $this->assertEmpty($result->getContent());
     }
 
-    function testCallWithNonStandardStatusCode()
+    function testJsonPayloadNoContent()
     {
-        $this->expectException('Phalcon\Http\Response\Exception');
-        $this->responseService->build([], 123);
+        $result = $this->responseService->buildWithJson('{"id":1,"message":"created"}', 204);
+        $this->assertEquals($this->responseService::STATUS_CODES['NO_CONTENT'], $result->getStatusCode());
+        $this->assertEmpty($result->getContent());
     }
 
-    function testCallWithNonUTF8Payload()
+    function testArrayPayloadWithNonStandardStatusCode()
     {
-        $this->expectException('InvalidArgumentException');
-        $this->responseService->build(["testing \xff"]);
+        $this->expectException('Phalcon\Http\Response\Exception');
+        $this->responseService->buildWithArray([], 123);
+    }
+
+    function testJsonPayloadWithNonStandardStatusCode()
+    {
+        $this->expectException('Phalcon\Http\Response\Exception');
+        $this->responseService->buildWithJson("", 123);
+    }
+
+    function testArrayPayloadWithNonUTF8Payload()
+    {
+        $this->expectException('JsonEncodeException');
+        $this->responseService->buildWithArray(["testing \xff"]);
+    }
+
+    function testJsonPayloadWithNonUTF8Payload()
+    {
+        $this->expectException('JsonEncodeException');
+        $this->responseService->buildWithJson("testing \xff");
     }
 }
