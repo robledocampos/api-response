@@ -57,7 +57,7 @@ class ResponseService
         $this->response = new Response();
     }
 
-    function call(Array $payload = [], int $statusCode = self::STATUS_CODES['OK']) : Response
+    function build(Array $payload = [], int $statusCode = self::STATUS_CODES['OK']) : Response
     {
         try {
 

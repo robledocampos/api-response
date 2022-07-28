@@ -4,7 +4,7 @@ use PHPUnit\Framework\TestCase;
 
 class ResponseServiceTest extends TestCase
 {
-    private $responseService;
+    private ResponseService $responseService;
 
     function setUp() : void
     {
@@ -13,28 +13,28 @@ class ResponseServiceTest extends TestCase
 
     function testEmptyPayload()
     {
-        $result = $this->responseService->call();
+        $result = $this->responseService->build();
         $this->assertEquals($this->responseService::STATUS_CODES['OK'], $result->getStatusCode());
         $this->assertEquals('[]', $result->getContent());
     }
 
     function testNotEmptyPayload()
     {
-        $result = $this->responseService->call(['id' => 1, 'message' => "created"]);
+        $result = $this->responseService->build(['id' => 1, 'message' => "created"]);
         $this->assertEquals($this->responseService::STATUS_CODES['OK'], $result->getStatusCode());
         $this->assertEquals('{"id":1,"message":"created"}', $result->getContent());
     }
 
     function testSetStatusCode()
     {
-        $result = $this->responseService->call([], 201);
+        $result = $this->responseService->build([], 201);
         $this->assertEquals($this->responseService::STATUS_CODES['CREATED'], $result->getStatusCode());
         $this->assertEquals('[]', $result->getContent());
     }
 
     function testNoContent()
     {
-        $result = $this->responseService->call(['id' => 1, 'message' => "created"], 204);
+        $result = $this->responseService->build(['id' => 1, 'message' => "created"], 204);
         $this->assertEquals($this->responseService::STATUS_CODES['NO_CONTENT'], $result->getStatusCode());
         $this->assertEmpty($result->getContent());
     }
@@ -42,12 +42,12 @@ class ResponseServiceTest extends TestCase
     function testCallWithNonStandardStatusCode()
     {
         $this->expectException('Phalcon\Http\Response\Exception');
-        $this->responseService->call([], 123);
+        $this->responseService->build([], 123);
     }
 
-    function testCallWithNotArrayPayload()
+    function testCallWithNonUTF8Payload()
     {
         $this->expectException('InvalidArgumentException');
-        $this->responseService->call(["testing \xff"]);
+        $this->responseService->build(["testing \xff"]);
     }
 }
