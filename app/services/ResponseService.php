@@ -60,7 +60,7 @@ class ResponseService
         $this->response = new Response();
     }
 
-    function buildWithArray(Array $payload = [], int $statusCode = self::STATUS_CODES['OK']) : Response
+    function buildWithArray(array $payload = [], int $statusCode = self::STATUS_CODES['OK']) : Response
     {
         $jsonPayload = json_encode($payload);
         if (!$jsonPayload) {
