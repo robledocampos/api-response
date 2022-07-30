@@ -1,5 +1,7 @@
 <?php
 
+namespace robledocampos\api_response\exceptions;
+
 
 class JsonEncodeException extends Exception
 {

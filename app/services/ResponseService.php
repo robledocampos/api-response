@@ -1,5 +1,8 @@
 <?php
 
+namespace robledocampos\api_response\services;
+
+
 use Phalcon\Http\Response;
 
 class ResponseService
