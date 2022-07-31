@@ -60,18 +60,32 @@ class ResponseService
         $this->response = new Response();
     }
 
-    function buildWithArray(array $payload = [], int $statusCode = self::STATUS_CODES['OK']) : Response
+    function buildFromArray(array $payload = [], int $statusCode = self::STATUS_CODES['OK']) : Response
     {
         $jsonPayload = json_encode($payload);
         if (!$jsonPayload) {
             throw new JsonEncodeException();
         }
+
         return $this->buildResponse($jsonPayload, $statusCode);
     }
 
-    function buildWithJson(string $jsonPayload = "", int $statusCode = self::STATUS_CODES['OK']) : Response
+    function buildFromJson(string $jsonPayload = "", int $statusCode = self::STATUS_CODES['OK']) : Response
     {
         return $this->buildResponse($jsonPayload, $statusCode);
+    }
+
+    function buildFromException(\Exception $exception, int $statusCode = self::STATUS_CODES['OK']) : Response
+    {
+        $messages = explode("|", $exception->getMessage());
+        $body = ['message' => null];
+        if (count($messages) > 1) {
+            $body['message'] = $messages;
+        } else {
+            $body['message'] = $messages[0];
+        }
+
+        return $this->buildFromArray($body,$exception->getCode());
     }
 
     private function buildResponse(string $jsonPayload, int $statusCode) : Response
