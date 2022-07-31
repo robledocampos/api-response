@@ -3,7 +3,7 @@
 namespace robledocampos\api_response\exceptions;
 
 
-class JsonEncodeException extends Exception
+class JsonEncodeException extends \Exception
 {
     const UTF8_CHARACTER = "Input has non utf-8 character.";
 

@@ -2,7 +2,8 @@
   "name": "robledocampos/api-response",
   "autoload": {
     "classmap": [
-      "app/"
+      "app/",
+      "tests/"
     ]
   },
   "require-dev": {

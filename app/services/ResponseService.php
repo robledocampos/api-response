@@ -4,6 +4,7 @@ namespace robledocampos\api_response\services;
 
 
 use Phalcon\Http\Response;
+use robledocampos\api_response\exceptions\JsonEncodeException;
 
 class ResponseService
 {
@@ -58,6 +59,7 @@ class ResponseService
     function __construct()
     {
         $this->response = new Response();
+        $this->response->setHeader('Content-Type', 'application/json');
     }
 
     function buildFromArray(array $payload = [], int $statusCode = self::STATUS_CODES['OK']) : Response

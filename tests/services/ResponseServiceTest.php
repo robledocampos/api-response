@@ -1,8 +1,8 @@
 <?php
 
 use robledocampos\api_response\services\ResponseService;
-
 use PHPUnit\Framework\TestCase;
+
 
 class ResponseServiceTest extends TestCase
 {
@@ -16,6 +16,8 @@ class ResponseServiceTest extends TestCase
     function testNoArgsArrayPayload()
     {
         $result = $this->responseService->buildFromArray();
+        $headers = $result->getHeaders();
+        $this->assertEquals("application/json", $headers->get('Content-Type'));
         $this->assertEquals(200, $result->getStatusCode());
         $this->assertEquals("[]", $result->getContent());
     }
@@ -88,21 +90,20 @@ class ResponseServiceTest extends TestCase
 
     function testArrayPayloadWithNonStandardStatusCode()
     {
-        $this->expectException('Phalcon\Http\Response\Exception');
+        $this->expectException("Phalcon\Http\Response\Exception");
         $this->responseService->buildFromArray([], 123);
     }
 
     function testJsonPayloadWithNonStandardStatusCode()
     {
-        $this->expectException('Phalcon\Http\Response\Exception');
+        $this->expectException("Phalcon\Http\Response\Exception");
         $this->responseService->buildFromJson("", 123);
     }
 
     function testArrayPayloadWithNonUTF8Payload()
     {
-        $this->expectException('JsonEncodeException');
+        $this->expectException('robledocampos\api_response\exceptions\JsonEncodeException');
         $this->responseService->buildFromArray(["testing \xff"]);
     }
-
 
 }
