@@ -77,7 +77,7 @@ class ResponseService
         return $this->buildResponse($jsonPayload, $statusCode);
     }
 
-    function buildFromException(\Exception $exception, int $statusCode = self::STATUS_CODES['OK']) : Response
+    function buildFromException(\Exception $exception) : Response
     {
         $messages = explode("|", $exception->getMessage());
         $body = ['message' => null];
@@ -86,8 +86,10 @@ class ResponseService
         } else {
             $body['message'] = $messages[0];
         }
+        $statusCode = in_array($exception->getCode(), ResponseService::STATUS_CODES) ?
+            $exception->getCode() : ResponseService::STATUS_CODES['INTERNAL_SERVER_ERROR'];
 
-        return $this->buildFromArray($body,$exception->getCode());
+        return $this->buildFromArray($body, $statusCode);
     }
 
     private function buildResponse(string $jsonPayload, int $statusCode) : Response
